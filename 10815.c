@@ -8,16 +8,16 @@ int main(){
   
   
   scanf("%d\n", &N);
-  long arr1[] = N;
+  long *arr1 = malloc(N);
   for(int i=0; i<N; i++){
-    scanf("%l ", &n);
+    scanf("%lu ", &n);
     arr1[i]=n;
   }
 
   scanf("%d\n", &M);
-  long arr2[] = M;
+  long *arr2 = malloc(M);
   for(int i = 0; i<M; i++){
-    scanf( "%l ", &m);
+    scanf( "%lu ", &m);
     arr2[i]= m;
   }
 
@@ -33,6 +33,6 @@ int main(){
   }
 
   for (int i = 0; i<N;i++){
-    printf("%l ", arr1[i]);
+    printf("%lu ", arr1[i]);
   }
 }
