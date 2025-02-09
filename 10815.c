@@ -7,22 +7,22 @@ int main(){
   long m = 0;
   
   
-  scanf("%d\n", N);
+  scanf("%d\n", &N);
   long arr1[] = N;
   for(int i=0; i<N; i++){
-    scanf("%d ", n);
+    scanf("%d ", &n);
     arr1[i]=n;
   }
 
-  scanf("%d\n", M);
+  scanf("%d\n", &M);
   long arr2[] = M;
   for(int i = 0; i<M; i++){
-    scanf( "%d ", m);
+    scanf( "%d ", &m);
     arr2[i]= m;
   }
 
   for (int i = 0; i<N; i++){
-    for(int j = o; j<M; J++){
+    for(int j = 0; j<M; j++){
       if( arr1[i] == arr2[j]){
         arr1[i] = 1;
       }
@@ -33,6 +33,6 @@ int main(){
   }
 
   for (int i = 0; i<N;i++){
-    printf("%d ", arr1[i]);
+    printf("%l ", arr1[i]);
   }
 }
