@@ -10,14 +10,14 @@ int main(){
   scanf("%d\n", &N);
   long arr1[] = N;
   for(int i=0; i<N; i++){
-    scanf("%d ", &n);
+    scanf("%l ", &n);
     arr1[i]=n;
   }
 
   scanf("%d\n", &M);
   long arr2[] = M;
   for(int i = 0; i<M; i++){
-    scanf( "%d ", &m);
+    scanf( "%l ", &m);
     arr2[i]= m;
   }
 
