@@ -1,82 +1,105 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define SIZE 1000000
+#include <string.h>
 
-int stack[MAX_STACK_SIZE];
-int top=-1;
- 
-typedef char element;
+#define TABLE_SIZE 500000
 
-typedef struct
-{
-  element data[SIZE];
-  int rear, front;
-} QueueType;
+typedef struct Node {
+    char name[6];
+    struct Node* next;
+} Node;
 
-void init(QueueType *Q)
-{
-  Q->rear = Q->front = -1;
+Node* hashTable[TABLE_SIZE];  // 해시 테이블
+
+// 해시 함수
+unsigned int hashFunction(char* str) {
+    unsigned int hash = 5381;
+    while (*str) {
+        hash = ((hash << 5) + hash) + (*str++);
+    }
+    return hash % TABLE_SIZE;
 }
 
-int is_empty(QueueType *Q)
-{
-  return Q->front == Q->rear;
+// 해시 테이블에 추가
+void insert(char* name) {
+    unsigned int index = hashFunction(name);
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    strcpy(newNode->name, name);
+    newNode->next = hashTable[index];
+    hashTable[index] = newNode;
 }
 
-void enqueue(QueueType *Q, element e)
-{
-  if (is_full(Q))
-    printf("Overflow\n");
-  else
-  {
-    Q->rear++;
+// 해시 테이블에서 삭제
+void removeNode(char* name) {
+    unsigned int index = hashFunction(name);
+    Node* prev = NULL;
+    Node* curr = hashTable[index];
 
-    Q->data[Q->rear] = e;
-  }
+    while (curr) {
+        if (strcmp(curr->name, name) == 0) {
+            if (prev) prev->next = curr->next;
+            else hashTable[index] = curr->next;
+            free(curr);
+            return;
+        }
+        prev = curr;
+        curr = curr->next;
+    }
 }
 
-element dequeue(QueueType *Q)
-{
-  if (is_empty(Q))
-  {
-    printf("Empty\n");
+// 해시 테이블에서 존재 여부 확인
+int exists(char* name) {
+    unsigned int index = hashFunction(name);
+    Node* curr = hashTable[index];
+
+    while (curr) {
+        if (strcmp(curr->name, name) == 0) return 1;
+        curr = curr->next;
+    }
     return 0;
-  }
-  else
-  {
-    Q->front++;
-    return Q->data[Q->front];
-  }
 }
 
-void print(QueueType *Q)
-{
-  printf("Front Pos : %d\n, Rear Pos : %d\n", Q->front, Q->rear);
-  for (int i = Q->front + 1; i <= Q->rear; i++) //반대로 바꿔야함
-  {
-    printf("[%c] ", Q->data[i]);
-  }
-  printf("\n");
+// 정렬을 위한 배열 저장
+char* names[TABLE_SIZE];
+int nameCount = 0;
+
+// 해시 테이블에서 모든 남아있는 사람 가져오기
+void collectNames() {
+    for (int i = 0; i < TABLE_SIZE; i++) {
+        Node* curr = hashTable[i];
+        while (curr) {
+            names[nameCount++] = curr->name;
+            curr = curr->next;
+        }
+    }
 }
 
-int main(){
-  int n;
-  char s1[5];
-  char s2[5];
-  
-  scanf("%d", &n);
-  for(int i=0; i<n; i++){
-    scanf("%s %s", &s1,&s2);
-    if (s2[0] == e){
-      enqueue(s1);
-    }
-    else{
-      dequeue(s1);
-    }
-  }
+// 비교 함수 (사전 역순 정렬)
+int compare(const void* a, const void* b) {
+    return strcmp(*(char**)b, *(char**)a);
+}
 
-  while(IsFull()==false)
-    printf(%d ", pop());
-  
-  
+int main() {
+    int n;
+    char name[6], action[10];
+
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; i++) {
+        scanf("%s %s", name, action);
+        if (strcmp(action, "enter") == 0) {
+            if (!exists(name)) insert(name);
+        } else {
+            removeNode(name);
+        }
+    }
+
+    collectNames();
+    qsort(names, nameCount, sizeof(char*), compare);
+
+    for (int i = 0; i < nameCount; i++) {
+        printf("%s\n", names[i]);
+    }
+
+    return 0;
 }
