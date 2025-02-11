@@ -9,9 +9,8 @@ typedef struct Node {
     struct Node* next;
 } Node;
 
-Node* hashTable[TABLE_SIZE];  // 해시 테이블
+Node* hashTable[TABLE_SIZE];
 
-// 해시 함수
 unsigned int hashFunction(char* str) {
     unsigned int hash = 5381;
     while (*str) {
@@ -20,7 +19,6 @@ unsigned int hashFunction(char* str) {
     return hash % TABLE_SIZE;
 }
 
-// 해시 테이블에 추가
 void insert(char* name) {
     unsigned int index = hashFunction(name);
     Node* newNode = (Node*)malloc(sizeof(Node));
@@ -29,7 +27,6 @@ void insert(char* name) {
     hashTable[index] = newNode;
 }
 
-// 해시 테이블에서 삭제
 void removeNode(char* name) {
     unsigned int index = hashFunction(name);
     Node* prev = NULL;
@@ -47,7 +44,6 @@ void removeNode(char* name) {
     }
 }
 
-// 해시 테이블에서 존재 여부 확인
 int exists(char* name) {
     unsigned int index = hashFunction(name);
     Node* curr = hashTable[index];
@@ -59,11 +55,9 @@ int exists(char* name) {
     return 0;
 }
 
-// 정렬을 위한 배열 저장
 char* names[TABLE_SIZE];
 int nameCount = 0;
 
-// 해시 테이블에서 모든 남아있는 사람 가져오기
 void collectNames() {
     for (int i = 0; i < TABLE_SIZE; i++) {
         Node* curr = hashTable[i];
@@ -74,7 +68,6 @@ void collectNames() {
     }
 }
 
-// 비교 함수 (사전 역순 정렬)
 int compare(const void* a, const void* b) {
     return strcmp(*(char**)b, *(char**)a);
 }
