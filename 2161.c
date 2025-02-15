@@ -85,11 +85,11 @@ int main()
     enqueue(&Q, i);
   }
 
-  while((Q.rear - Q.front + SIZE) % SIZE > 1){
+  while((Q.rear - Q.front) > 1){
     printf("%d ", dequeue(&Q));
     enqueue(&Q, dequeue(&Q));
   }
 
-  printf("%d", dequeue(&Q));
+  printf("%d\n", dequeue(&Q));
   
 }
