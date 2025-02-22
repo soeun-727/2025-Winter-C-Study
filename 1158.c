@@ -2,80 +2,71 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#define SIZE 5000
 
-typedef struct 
-{	
-  int data[SIZE]; 
-  int front, rear;
-}QueueType;
+typedef struct {
+    int *data;
+    int front, size, capacity;
+} QueueType;
 
-void init(QueueType *Q)
-{   
-  Q->front = Q->rear = 0; 
+void initQueue(QueueType *Q, int capacity) { //큐 초기화
+    Q->data = (int *)malloc(capacity * sizeof(int));
+    Q->front = 0;
+    Q->size = 0;
+    Q->capacity = capacity;
 }
 
-int isEmpty(QueueType *Q) 
-{
-  return Q->front == Q->rear;
-}
-int isFull(QueueType *Q) 
-{
-  return Q->rear == SIZE-1;
+int isEmpty(QueueType *Q) {
+    return Q->size == 0;
 }
 
-void enqueue(QueueType *Q, int e)
-{
-  if(isFull(Q))
-      printf("Queue is Full!\n");
-  else
-  {
-      Q->rear = (Q->rear + 1) % SIZE;
-      Q->data[Q->rear] = e;
-  }
+void enqueue(QueueType *Q, int value) { //삽입
+    int rear = (Q->front + Q->size) % Q->capacity;
+    Q->data[rear] = value;
+    Q->size++;
 }
 
-int dequeue(QueueType *Q)
-{  
-  if(isEmpty(Q))
-  {
-      printf("Queue is Empty.\n");
-      return -1;
-  }
-  Q->front = (Q->front + 1) % SIZE;
-  return Q->data[Q->front];
-}
-
-int main(){
-  int N, K;
-  scanf("%d %d", &N, &K);
-
-  int *result = (int *)malloc(N * sizeof(int));
-  QueueType Q;
-  init(&Q);
-
-  for(int i = 0; i < N; i++){
-    enqueue(&Q, i+1);
-  }
-
-  int count = 0;
-  printf("<");
-
-  while (!isEmpty(&Q)) {
-    for (int i = 0; i < K - 1; i++) {
-      enqueue(&Q, dequeue(&Q));
+int dequeue(QueueType *Q) { //제거, 반환
+    if (isEmpty(Q)) {
+        return -1;
     }
-    result[count++] = dequeue(&Q);
-  }
-  
-  for (int i = 0; i < N; i++) {
-    printf("%d", result[i]);
-    if (i != N - 1) {
-      printf(", ");
-    }
-  }
-  printf(">");
+    int value = Q->data[Q->front];
+    Q->front = (Q->front + 1) % Q->capacity;
+    Q->size--;
+    return value;
+}
 
-  free(result);
-  return 0;
+void circle(int N, int K) { //순열 함수
+    QueueType Q;
+    initQueue(&Q, N);
+
+    for (int i = 1; i <= N; i++) { //N까지 삽입
+        enqueue(&Q, i);
+    }
+
+    printf("<");
+    
+    // 요세푸스 순열 계산
+    for (int count = 0; count < N; count++) {
+        // K-1까지 맨 앞 요소를 꺼내서 맨 뒤로 보냄
+        for (int i = 0; i < K - 1; i++) {
+            enqueue(&Q, dequeue(&Q));
+        }
+        // K번째 요소 제거 및 출력
+        printf("%d", dequeue(&Q));
+        if (count != N - 1) {
+            printf(", ");
+        }
+    }
+    
+    printf(">\n");
+
+    //메모리 해제
+    free(Q.data);
+}
+
+int main() {
+    int N, K;
+    scanf("%d %d", &N, &K);
+    circle(N, K);
+    return 0;
 }
