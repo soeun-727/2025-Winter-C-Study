@@ -1,2 +1,2 @@
-# 2025-Winter-C-Study
-2025-Winter-C-Study
+C언어 스터디
+백준 문제 풀이
